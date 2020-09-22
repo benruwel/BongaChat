@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:text="Login"
             android:padding="10dp"
             android:textColor="@color/colorAccent"/>
@@ -29,16 +29,17 @@
             android:layout_width="match_parent"
             app:endIconMode="clear_text"
             android:paddingBottom="10dp"
-            app:boxStrokeColor="@color/colorAccent"
+            app:boxBackgroundColor="@color/gray"
+            app:boxStrokeColor="@color/gray_dark"
+            android:textColorHint="@color/gray_dark"
             android:layout_height="wrap_content"
             app:errorEnabled="true"
-            app:boxBackgroundColor="@color/gray"
             android:hint="@string/email_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/gray_dark" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,18 +47,20 @@
             android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:paddingBottom="10dp"
+            app:boxBackgroundColor="@color/gray"
             app:endIconMode="password_toggle"
-            app:boxStrokeColor="@color/colorAccent"
+            app:endIconTint="@color/gray_dark"
+            app:boxStrokeColor="@color/gray_dark"
+            android:textColorHint="@color/gray_dark"
             android:layout_height="wrap_content"
             app:errorEnabled="true"
-            app:boxBackgroundColor="#f0efeb"
             android:hint="@string/password_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:inputType="textPassword"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/gray_dark" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         createAuthProgressDialog();
 
         //initialize FCM to get the user's token
-        initFCM();
+       // initFCM();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
                         //send token to server
-                        sendRegistrationToServer(token);
+                        //sendRegistrationToServer(token);
                     }
                 });
         // [END retrieve_current_token]
