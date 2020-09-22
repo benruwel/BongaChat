@@ -113,14 +113,14 @@ public class LoginActivity extends AppCompatActivity {
         boolean isGoodEmail =
                 (email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches());
         if (!isGoodEmail) {
-            mEmailAddress.setError("Please enter a valid email address");
+            //mEmailAddress.setError("Please enter a valid email address");
             return false;
         }
         return isGoodEmail;
     }
     private boolean isValidPassword(String password) {
         if (password.equals("")) {
-            mPassword.setError("Password cannot be blank");
+            //mPassword.setError("Password cannot be blank");
             return false;
         }
         return true;
