@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BongaChat</string>
+    <string name="dbnode_users">users</string>
+    <string name="field_messaging_token">messaging_token</string>
 </resources>
