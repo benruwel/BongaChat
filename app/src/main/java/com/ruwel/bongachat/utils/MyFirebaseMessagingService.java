@@ -1,6 +1,8 @@
 package com.ruwel.bongachat.utils;
 
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -12,7 +14,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
+        String notificationBody = "";
+        String notificationTitle = "";
+        String notificationData = "";
+        try{
+            Object object;
+            notificationData = remoteMessage.getData().toString();
+            notificationBody = remoteMessage.getNotification().getBody();
+            notificationTitle = remoteMessage.getNotification().getTitle();
+        } catch (NullPointerException e){
+            Log.e(TAG, "onMessageReceived: NulllPointerException:" + e.getMessage());
+        }
+
+        Log.d(TAG, "onMessageReceived : data" + notificationData);
+        Log.d(TAG, "onMessageReceived : body" + notificationBody);
+        Log.d(TAG, "onMessageReceived : title" + notificationTitle);
     }
 
     @Override
