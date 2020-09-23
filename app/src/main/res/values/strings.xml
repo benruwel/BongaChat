@@ -4,8 +4,11 @@
     <string name="field_messaging_token">messaging_token</string>
 
 
-    <string name="login_text">Login</string>
+    <string name="login_text">Log in</string>
+    <string name="signup_text">Sign up</string>
     <string name="email_text">Enter email</string>
+    <string name="name_text">Enter name</string>
+    <string name="phone_text">Enter phone number</string>
     <string name="password_text">Password</string>
     <string name="confirm_password_text">Confirm password</string>
 

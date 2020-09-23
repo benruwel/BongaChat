@@ -1,9 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bonga_bg"
+    android:gravity="center"
     tools:context=".ui.SignupActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input_box"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:padding="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:paddingBottom="10dp"
+            android:text="Join us to start connecting right away"
+            android:textColor="@color/gray"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signup_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name_text"
+            android:paddingBottom="10dp"
+            android:textColorHint="@color/gray_dark"
+            android:alpha="0.7"
+            app:boxBackgroundColor="@color/gray_translucent"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/gray_dark"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/gray_dark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signup_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email_text"
+            android:paddingBottom="10dp"
+            android:textColorHint="@color/gray_dark"
+            android:alpha="0.7"
+            app:boxBackgroundColor="@color/gray_translucent"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/gray_dark"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/gray_dark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signup_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone_text"
+            android:paddingBottom="10dp"
+            android:textColorHint="@color/gray_dark"
+            android:alpha="0.7"
+            app:boxBackgroundColor="@color/gray_translucent"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/gray_dark"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/gray_dark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signup_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_text"
+            android:paddingBottom="10dp"
+            android:textColorHint="@color/gray_dark"
+            android:alpha="0.7"
+            app:boxBackgroundColor="@color/gray_translucent"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/gray_dark"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/gray_dark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signup_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/confirm_password_text"
+            android:paddingBottom="10dp"
+            android:textColorHint="@color/gray_dark"
+            android:alpha="0.7"
+            app:boxBackgroundColor="@color/gray_translucent"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@color/gray_dark"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/gray_dark">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        app:rippleColor="@color/colorAccent_ripple"
+        app:backgroundTint="@color/colorAccent"
+        android:text="Sign up"/>
+
+</LinearLayout>
