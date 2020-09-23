@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +35,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextInputLayout mEmail;
     @BindView(R.id.login_password)
     TextInputLayout mPassword;
+    @BindView(R.id.noAccount1)
+    TextView mNoAccount1;
+    @BindView(R.id.noAccount2)
+    TextView mNoAccount2;
 
     private static final String TAG = "LoginActivity";
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -52,12 +57,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         createAuthProgressDialog();
         //click listeners
         mLoginButton.setOnClickListener(this);
+        mNoAccount1.setOnClickListener(this);
+        mNoAccount2.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         if(view == mLoginButton) {
             loginWithPassword();
+        }
+        if(view == mNoAccount1 || view == mNoAccount2) {
+            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 

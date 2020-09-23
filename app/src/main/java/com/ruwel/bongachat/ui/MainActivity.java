@@ -58,8 +58,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if(id == R.id.admin) {
-            if(isAdmin()) {
-
+            boolean adminTruthy = isAdmin();
+            if(adminTruthy) {
+                Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                startActivity(intent);
+                finish();
             } else {
                 Snackbar.make(textView, "You don't have admin privilege", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(getResources().getColor(R.color.gray_dark))
@@ -72,13 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isAdmin() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        Query query = reference.child(getString(R.string.dbnode_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(getString(R.string.field_security_level)).orderByValue();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DataSnapshot singleSnapshot = snapshot.getChildren().iterator().next();
-                mSecurity_level = Integer.parseInt(singleSnapshot.getValue().toString());
+                mSecurity_level = Integer.parseInt(snapshot.getValue().toString());
             }
 
             @Override
