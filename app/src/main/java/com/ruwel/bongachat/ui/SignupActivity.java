@@ -136,6 +136,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(getString(R.string.field_phone))
                 .setValue(phone);
+        reference.child(getString(R.string.dbnode_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.field_security_level))
+                .setValue("0");
     }
 
     private void createAuthStateListener() {

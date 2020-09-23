@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -28,12 +29,17 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
 
     private int mSecurity_level;
+    private boolean adminTruthy;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        //check the user's admin privilege as soon as the activity starts
+        isAdmin();
     }
 
     @Override
@@ -58,11 +64,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if(id == R.id.admin) {
-            boolean adminTruthy = isAdmin();
             if(adminTruthy) {
                 Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                 startActivity(intent);
-                finish();
             } else {
                 Snackbar.make(textView, "You don't have admin privilege", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(getResources().getColor(R.color.gray_dark))
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean isAdmin() {
+    private void isAdmin() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbnode_users))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mSecurity_level = Integer.parseInt(snapshot.getValue().toString());
+                Log.d(TAG, "security level : " + mSecurity_level);
             }
 
             @Override
@@ -89,6 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        return mSecurity_level == 10;
+        adminTruthy = mSecurity_level == 10;
     }
 }
