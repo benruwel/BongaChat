@@ -1,4 +1,7 @@
 package com.ruwel.bongachat.utils;
 
-public interface FCMClient {
+import retrofit2.Retrofit;
+
+public class FCMClient {
+    private static Retrofit retrofit = null;
 }
