@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if(id == R.id.admin) {
-            if(adminTruthy) {
+            if(mSecurity_level == 10) {
                 Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                 startActivity(intent);
             } else {
@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mSecurity_level = Integer.parseInt(snapshot.getValue().toString());
-                Log.d(TAG, "security level : " + mSecurity_level);
             }
 
             @Override
@@ -94,6 +93,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        adminTruthy = mSecurity_level == 10;
     }
 }
