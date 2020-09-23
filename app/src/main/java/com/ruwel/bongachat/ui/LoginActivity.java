@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -17,10 +20,20 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+
+    @BindView(R.id.login_button)
+    Button mLoginButton;
+    @BindView(R.id.login_email)
+    TextInputLayout mEmail;
+    @BindView(R.id.login_password)
+    TextInputLayout mPassword;
 
     private static final String TAG = "LoginActivity";
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -35,12 +48,17 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthStateListener();
-
         //start the progress dialog
         createAuthProgressDialog();
+        //click listeners
+        mLoginButton.setOnClickListener(this);
+    }
 
-        //initialize FCM to get the user's token
-        initFCM();
+    @Override
+    public void onClick(View view) {
+        if(view == mLoginButton) {
+            loginWithPassword();
+        }
     }
 
     @Override
@@ -57,6 +75,36 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void loginWithPassword() {
+        String email = mEmail.getEditText().getText().toString().trim();
+        String password = mPassword.getEditText().getText().toString().trim();
+        if (email.equals("")) {
+            mEmail.setError("Please enter your email");
+            return;
+        }
+        if (password.equals("")) {
+            mPassword.setError("Password cannot be blank");
+            return;
+        }
+
+        mProgressDialog.show();
+
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        mProgressDialog.dismiss();
+                        if (!task.isSuccessful()) {
+                            Snackbar.make(mLoginButton, "Authentication failed", Snackbar.LENGTH_SHORT)
+                                    .setBackgroundTint(getResources().getColor(R.color.gray_dark))
+                                    .setActionTextColor(getResources().getColor(R.color.gray))
+                                    .show();
+                        }
+                    }
+                });
+    }
+
     private void createAuthStateListener() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
 
@@ -67,6 +115,8 @@ public class LoginActivity extends AppCompatActivity {
                     //if there exists an already authenticated account, the user is redirected to the main activity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    //initialize FCM to get the user's token
+                    initFCM();
                     startActivity(intent);
                     finish();
                 }
@@ -107,23 +157,6 @@ public class LoginActivity extends AppCompatActivity {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(getString(R.string.field_messaging_token))
                 .setValue(refreshedToken);
-    }
-
-    private boolean isValidEmail(String email) {
-        boolean isGoodEmail =
-                (email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches());
-        if (!isGoodEmail) {
-            //mEmailAddress.setError("Please enter a valid email address");
-            return false;
-        }
-        return isGoodEmail;
-    }
-    private boolean isValidPassword(String password) {
-        if (password.equals("")) {
-            //mPassword.setError("Password cannot be blank");
-            return false;
-        }
-        return true;
     }
     
 }
