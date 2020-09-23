@@ -1,5 +1,7 @@
 package com.ruwel.bongachat.models;
 
+import androidx.annotation.NonNull;
+
 public class FCMData {
     private String title;
     private String message;
@@ -35,5 +37,11 @@ public class FCMData {
 
     public void setData_type(String data_type) {
         this.data_type = data_type;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }
