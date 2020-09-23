@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/bonga_bg"
-    android:gravity="center"
     tools:context=".ui.SignupActivity">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_marginTop="50dp"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -153,3 +161,5 @@
         android:text="Sign up"/>
 
 </LinearLayout>
+
+</ScrollView>

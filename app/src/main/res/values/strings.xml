@@ -2,6 +2,9 @@
     <string name="app_name">BongaChat</string>
     <string name="dbnode_users">users</string>
     <string name="field_messaging_token">messaging_token</string>
+    <string name="field_name">name</string>
+    <string name="field_email">email</string>
+    <string name="field_phone">phone</string>
 
 
     <string name="login_text">Log in</string>
