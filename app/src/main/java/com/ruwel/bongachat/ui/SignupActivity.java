@@ -61,7 +61,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         mSignUpButton.setOnClickListener(this);
 
         createAuthProgressDialog();
-
     }
     @Override
     public void onStart() {
@@ -80,17 +79,17 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         if(view == mSignUpButton) {
-
+            createNewUser();
         }
     }
 
     //method to hold logic for creating new accounts
     private void createNewUser() {
-        String name = mName.getEditText().toString().trim();
-        String email = mEmail.getEditText().toString().trim();
-        String phone = mPhone.getEditText().toString().trim();
-        String password = mPassword.getEditText().toString().trim();
-        String confirmPassword = mConfirmPassword.getEditText().toString().trim();
+        String name = mName.getEditText().getText().toString().trim();
+        String email = mEmail.getEditText().getText().toString().trim();
+        String phone = mPhone.getEditText().getText().toString().trim();
+        String password = mPassword.getEditText().getText().toString().trim();
+        String confirmPassword = mConfirmPassword.getEditText().getText().toString().trim();
 
         //calling the form validation methods
         boolean validEmail = isValidEmail(email);
@@ -107,15 +106,15 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         mProgressAuthDialog.dismiss();
                         if (task.isSuccessful()) {
                             Snackbar.make(mSignUpButton, "Successful", Snackbar.LENGTH_SHORT)
-                                    .setBackgroundTint(getResources().getColor(R.color.gray))
-                                    .setActionTextColor(getResources().getColor(R.color.gray_dark))
+                                    .setBackgroundTint(getResources().getColor(R.color.gray_dark))
+                                    .setActionTextColor(getResources().getColor(R.color.gray))
                                     .show();
                             storeValuesInDB(name, email, phone);
                         } else {
                             //snack bar
                             Snackbar.make(mSignUpButton, "Error! Try again", Snackbar.LENGTH_SHORT)
-                                    .setBackgroundTint(getResources().getColor(R.color.gray))
-                                    .setActionTextColor(getResources().getColor(R.color.gray_dark))
+                                    .setBackgroundTint(getResources().getColor(R.color.gray_dark))
+                                    .setActionTextColor(getResources().getColor(R.color.gray))
                                     .show();
                         }
                     }
