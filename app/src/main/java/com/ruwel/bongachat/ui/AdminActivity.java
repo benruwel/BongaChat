@@ -13,6 +13,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.utils.FCMApi;
+import com.ruwel.bongachat.utils.FCMClient;
+
+import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -43,5 +50,16 @@ public class AdminActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void sendMessageToGroup(String title, String message) {
+        Log.d(TAG, "sendMessageToGroup : sending message");
+        //attach the headers for the http req using maps
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("Authorization", "key="+mServerKey);
+
+        FCMApi client = FCMClient.getClient();
+//        Call<ResponseBody> call = client.send(title)
     }
 }
