@@ -1,8 +1,16 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 
     defaultConfig {
         applicationId "com.ruwel.bongachat"
@@ -29,5 +37,34 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
+    //robolectric dep
+    testImplementation 'org.robolectric:robolectric:4.2.1'
+    //espresso
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    //butter knife
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    //recylcerview
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    //parceler
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
+    //firebase analytics
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-core:17.4.4'
+    //firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database:19.3.1'
+    // FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:6.3.0'
+    //firebase auth service
+    implementation 'com.google.firebase:firebase-auth:19.3.2'
+    //firebase cloud messaging
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
+    //material UI
+    implementation 'com.google.android.material:material:1.2.1'
 }
