@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.models.FCMData;
 import com.ruwel.bongachat.models.FirebaseCloudMessage;
 import com.ruwel.bongachat.utils.FCMApi;
 import com.ruwel.bongachat.utils.FCMClient;
@@ -24,6 +25,8 @@ import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -40,6 +43,7 @@ public class AdminActivity extends AppCompatActivity {
 
         //testing
         getServerKey();
+        getMessageTokens();
     }
 
     //Now that is the admin activity, we can query db for some-what risky data
@@ -66,14 +70,54 @@ public class AdminActivity extends AppCompatActivity {
         headers.put("Content-Type", "application/json");
         headers.put("Authorization", "key="+mServerKey);
 
-        FCMApi client = FCMClient.getClient();
-//        Call<ResponseBody> call = client.send(headers, )
+        //send messages to all tokes
+        for(String token : mTokens){
+            Log.d(TAG, "sendMessageToGroup: sending to token" + token);
+            FCMData data = new FCMData();
+            data.setMessage(message);
+            data.setTitle(title);
+            data.setData_type(getString(R.string.data_type_admin_broadcast));
+            FirebaseCloudMessage fcMessage = new FirebaseCloudMessage();
+            fcMessage.setData(data);
+            fcMessage.setTo(token);
+
+            //set up retrofit to send post reqs
+            FCMApi client = FCMClient.getClient();
+            Call<ResponseBody> call = client.send(headers, fcMessage);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Log.d(TAG, "onResponse: Server response : " + response.toString());
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.d(TAG, "onFailure: Unable to send message: " + t.getMessage());
+                }
+            });
+        }
+
     }
 
     private void getMessageTokens() {
         mTokens = new HashSet<>();
+        getUserIds();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//        Query query = reference
+        for(String uid : mUserIds) {
+            Query query = reference.child(getString(R.string.dbnode_users))
+                    .child(uid).child(getString(R.string.field_messaging_token)).orderByValue();
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    mTokens.add(snapshot.getValue().toString());
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
 
     }
     private void getUserIds() {
@@ -85,7 +129,9 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    mUserIds.add(snapshot1.getKey().toString());
+                    String uid = snapshot1.getKey().toString();
+                    mUserIds.add(uid);
+                    Log.d(TAG, "onDataChange value : userIds" + uid);
                 }
             }
 
