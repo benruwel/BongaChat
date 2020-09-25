@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,12 +27,21 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity implements View.OnClickListener {
+
+    @BindView(R.id.broadcast_title)
+    TextInputLayout mBroadcastTitle;
+    @BindView(R.id.broadcast_message)
+    TextInputLayout mBroadcastMessage;
+    @BindView(R.id.broadcast_button)
+    Button mBroadcastButton;
 
     private String mServerKey;
     private static final String TAG = "AdminActivity";
@@ -40,10 +53,23 @@ public class AdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+        ButterKnife.bind(this);
+
+        mBroadcastButton.setOnClickListener(this);
 
         //testing
         getServerKey();
+        getUserIds();
         getMessageTokens();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == mBroadcastButton) {
+            String title = mBroadcastTitle.getEditText().getText().toString();
+            String message = mBroadcastMessage.getEditText().getText().toString();
+            sendMessageToGroup(title, message);
+        }
     }
 
     //Now that is the admin activity, we can query db for some-what risky data
@@ -88,11 +114,19 @@ public class AdminActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     Log.d(TAG, "onResponse: Server response : " + response.toString());
+                    Snackbar.make(mBroadcastButton, "Broadcast sent", Snackbar.LENGTH_LONG)
+                            .setBackgroundTint(getResources().getColor(R.color.gray_dark))
+                            .setActionTextColor(getResources().getColor(R.color.gray))
+                            .show();
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.d(TAG, "onFailure: Unable to send message: " + t.getMessage());
+                    Snackbar.make(mBroadcastButton, "Something went wrong", Snackbar.LENGTH_LONG)
+                            .setBackgroundTint(getResources().getColor(R.color.gray_dark))
+                            .setActionTextColor(getResources().getColor(R.color.gray))
+                            .show();
                 }
             });
         }
@@ -101,19 +135,22 @@ public class AdminActivity extends AppCompatActivity {
 
     private void getMessageTokens() {
         mTokens = new HashSet<>();
-        getUserIds();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Log.d(TAG, "getMessageTokens: testing if we get here");
         for(String uid : mUserIds) {
+            Log.d(TAG, "getMessageTokens: here is the uid we want to query " + uid);
             Query query = reference.child(getString(R.string.dbnode_users))
-                    .child(uid).child(getString(R.string.field_messaging_token)).orderByValue();
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    .child(uid).child(getString(R.string.field_messaging_token));
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    mTokens.add(snapshot.getValue().toString());
+                    String token = snapshot.getValue().toString();
+                    mTokens.add(token);
+                    Log.d(TAG, "onDataChange: message tokens " + token );
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Log.d(TAG, "onDataChange: getting message tokens produced this error - " + error.getMessage() );
                 }
             });
         }
@@ -131,7 +168,7 @@ public class AdminActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     String uid = snapshot1.getKey().toString();
                     mUserIds.add(uid);
-                    Log.d(TAG, "onDataChange value : userIds" + uid);
+                    Log.d(TAG, "onDataChange value : userIds " + uid);
                 }
             }
 
