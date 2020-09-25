@@ -13,10 +13,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.models.FirebaseCloudMessage;
 import com.ruwel.bongachat.utils.FCMApi;
 import com.ruwel.bongachat.utils.FCMClient;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -25,6 +29,9 @@ public class AdminActivity extends AppCompatActivity {
 
     private String mServerKey;
     private static final String TAG = "AdminActivity";
+    //use Set object because we can't have duplicate message tokens
+    Set<String> mTokens;
+    Set<String> mUserIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,32 @@ public class AdminActivity extends AppCompatActivity {
         headers.put("Authorization", "key="+mServerKey);
 
         FCMApi client = FCMClient.getClient();
-//        Call<ResponseBody> call = client.send(title)
+//        Call<ResponseBody> call = client.send(headers, )
+    }
+
+    private void getMessageTokens() {
+        mTokens = new HashSet<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//        Query query = reference
+
+    }
+    private void getUserIds() {
+        mUserIds = new HashSet<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child(getString(R.string.dbnode_users))
+                .orderByKey();
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    mUserIds.add(snapshot1.getKey().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
