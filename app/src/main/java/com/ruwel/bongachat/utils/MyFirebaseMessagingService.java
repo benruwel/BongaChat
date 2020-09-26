@@ -65,8 +65,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //SITUATION : app is in the background
         else if(!isApplicationInForeground()) {
             if(identifyDataType.equals(getString(R.string.data_type_admin_broadcast))) {
-
-            } else if(identifyDataType.equals(getString(R.string.data_type_chat_message))) {
+                String title = remoteMessage.getData().get(getString(R.string.data_title));
+                String message = remoteMessage.getData().get(getString(R.string.data_message));
+                sendBroadcastNotification(title, message);
+            }
+            else if(identifyDataType.equals(getString(R.string.data_type_chat_message))) {
 
             }
         }
