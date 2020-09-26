@@ -60,7 +60,6 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
         //testing
         getServerKey();
         getUserIds();
-        getMessageTokens();
     }
 
     @Override
@@ -71,6 +70,17 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
             sendMessageToGroup(title, message);
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
 
     //Now that is the admin activity, we can query db for some-what risky data
     private void getServerKey() {
@@ -107,7 +117,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
             fcMessage.setData(data);
             fcMessage.setTo(token);
 
-            //set up retrofit to send post reqs
+            //set up retrofit to send POST reqs
             FCMApi client = FCMClient.getClient();
             Call<ResponseBody> call = client.send(headers, fcMessage);
             call.enqueue(new Callback<ResponseBody>() {
@@ -133,6 +143,31 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private void getUserIds() {
+        mUserIds = new HashSet<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child(getString(R.string.dbnode_users))
+                .orderByKey();
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    String uid = snapshot1.getKey().toString();
+                    mUserIds.add(uid);
+                    Log.d(TAG, "onDataChange thread value : " + Thread.currentThread().getId());
+                }
+                if(!mUserIds.isEmpty()) {
+                    getMessageTokens();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void getMessageTokens() {
         mTokens = new HashSet<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -154,28 +189,5 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
         }
-
-
-    }
-    private void getUserIds() {
-        mUserIds = new HashSet<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbnode_users))
-                .orderByKey();
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    String uid = snapshot1.getKey().toString();
-                    mUserIds.add(uid);
-                    Log.d(TAG, "onDataChange value : userIds " + uid);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 }
