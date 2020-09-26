@@ -45,6 +45,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
 
     private String mServerKey;
     private static final String TAG = "AdminActivity";
+    public static boolean isActivityRunning;
     //use Set object because we can't have duplicate message tokens
     Set<String> mTokens;
     Set<String> mUserIds;
@@ -74,11 +75,13 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
+        isActivityRunning = true;
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        isActivityRunning = false;
     }
 
 

@@ -41,6 +41,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     TextInputLayout mPhone;
 
     private static final String TAG = "SignupActivity";
+    public static boolean isActivityRunning;
 
     //this class responsible for all auth actions we require
     private FirebaseAuth firebaseAuth;
@@ -67,6 +68,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
         //essential for the auth state listener to work
         firebaseAuth.addAuthStateListener(mAuthListener);
+        isActivityRunning = true;
     }
 
     @Override
@@ -75,6 +77,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         if (mAuthListener != null) {
             firebaseAuth.removeAuthStateListener(mAuthListener);
         }
+        isActivityRunning = false;
     }
     @Override
     public void onClick(View view) {

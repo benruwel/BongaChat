@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog mProgressDialog;
+    public static boolean isActivityRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(mAuthListener);
+        isActivityRunning = true;
     }
 
     @Override
@@ -85,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (mAuthListener != null) {
             firebaseAuth.removeAuthStateListener(mAuthListener);
         }
+        isActivityRunning = false;
     }
 
     private void loginWithPassword() {

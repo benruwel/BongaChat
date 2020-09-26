@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private int mSecurity_level;
     private boolean adminTruthy;
     private static final String TAG = "MainActivity";
+    public static boolean isActivityRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        isActivityRunning = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isActivityRunning = false;
     }
 
     private void isAdmin() {

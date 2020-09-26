@@ -21,6 +21,8 @@
     <string name="data_chatroom_id">chatroom_id</string>
     <string name="reply_label">intent_data_payload</string>
     <string name="label">new message...</string>
+    <string name="default_notification_channel_name">com.ruwel.bongachat.default_notification_channel_name</string>
+    <string name="default_notification_channel_id">com.ruwel.bongachat.default_notification_channel_id</string>
 
     <string name="login_text">Log in</string>
     <string name="signup_text">Sign up</string>
