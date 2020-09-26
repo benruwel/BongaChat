@@ -1,15 +1,18 @@
 package com.ruwel.bongachat.models;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
+@Parcel
 public class ChatRoom {
 
-    private String chatroom_name;
-    private String creator_id;
-    private String security_level;
-    private String chatroom_id;
-    private List<ChatMessage> chatroom_messages;
-    private List<String> users;
+    public String chatroom_name;
+    public String creator_id;
+    public String security_level;
+    public String chatroom_id;
+    public List<ChatMessage> chatroom_messages;
+    public List<String> users;
 
     public ChatRoom(String chatroom_name, String creator_id, String security_level, String chatroom_id, List<ChatMessage> chatroom_messages, List<String> users) {
         this.chatroom_name = chatroom_name;
