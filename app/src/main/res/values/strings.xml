@@ -1,17 +1,6 @@
 <resources>
     <string name="app_name">BongaChat</string>
 
-    <string name="dbnode_users">users</string>
-    <string name="field_messaging_token">messaging_token</string>
-    <string name="field_name">name</string>
-    <string name="field_email">email</string>
-    <string name="field_phone">phone</string>
-    <string name="field_security_level">security_level</string>
-
-    <string name="dbnode_server">server</string>
-    <string name="field_server_key">server_key</string>
-
-    <string name="dbnode_chatrooms">chatrooms</string>
 
 <!--    FCM related values-->
     <string name="data_type_chat_message">data_type_chat_message</string>
@@ -24,6 +13,35 @@
     <string name="label">new message...</string>
     <string name="default_notification_channel_name">com.ruwel.bongachat.default_notification_channel_name</string>
     <string name="default_notification_channel_id">com.ruwel.bongachat.default_notification_channel_id</string>
+
+    <!-- Firebase DB Nodes-->
+    <string name="dbnode_users">users</string>
+    <string name="dbnode_chatrooms">chatrooms</string>
+    <string name="dbnode_server">server</string>
+
+    <!-- Firebase Database Fields -->
+    <string name="field_chatroom_name">chatroom_name</string>
+    <string name="field_creator_id">creator_id</string>
+    <string name="field_security_level">security_level</string>
+    <string name="field_email">email</string>
+    <string name="field_name">name</string>
+    <string name="field_phone">phone</string>
+    <string name="field_profile_image">profile_image</string>
+    <string name="field_user_id">user_id</string>
+    <string name="field_chatroom_id">chatroom_id</string>
+    <string name="field_chatroom_messages">chatroom_messages</string>
+    <string name="field_message">message</string>
+    <string name="field_timestamp">timestamp</string>
+    <string name="field_messaging_token">messaging_token</string>
+    <string name="field_department">department</string>
+    <string name="field_server_key">server_key</string>
+    <string name="field_users">users</string>
+    <string name="field_last_message_seen">last_message_seen</string>
+
+    <!-- Intent Extras -->
+    <string name="intent_chatroom">intent_chatroom</string>
+    <string name="intent_data_payload">intent_data_payload</string>
+    <string name="intent_message">intent_data_payload</string>
 
     <string name="login_text">Log in</string>
     <string name="signup_text">Sign up</string>

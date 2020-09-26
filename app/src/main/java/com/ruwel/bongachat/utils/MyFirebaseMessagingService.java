@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.os.Parcel;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,15 +29,22 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.models.ChatRoom;
 import com.ruwel.bongachat.ui.AdminActivity;
 import com.ruwel.bongachat.ui.LoginActivity;
 import com.ruwel.bongachat.ui.MainActivity;
 import com.ruwel.bongachat.ui.SignupActivity;
 
+import org.parceler.Parcels;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
     private static final int BROADCAST_NOTIFICATION_ID = 1;
+    private int mNumPendingMessages;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -74,29 +82,47 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendBroadcastNotification(title, message);
             }
             else if(identifyDataType.equals(getString(R.string.data_type_chat_message))) {
-            }
                 final String title = remoteMessage.getData().get(getString(R.string.data_title));
                 final String message = remoteMessage.getData().get(getString(R.string.data_message));
                 final String chatRoomId = remoteMessage.getData().get(getString(R.string.data_chatroom_id));
 
-            Log.d(TAG, "onMessageReceived: chatroom id = " + chatRoomId);
-            Query query = FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbnode_chatrooms))
-                    .orderByKey()
-                    .equalTo(chatRoomId);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.getChildren().iterator().hasNext()) {
-                        DataSnapshot dataSnapshot = snapshot.getChildren().iterator().next();
+                Log.d(TAG, "onMessageReceived: chatroom id = " + chatRoomId);
+                Query query = FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbnode_chatrooms))
+                        .orderByKey()
+                        .equalTo(chatRoomId);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.getChildren().iterator().hasNext()) {
+                            DataSnapshot dataSnapshot = snapshot.getChildren().iterator().next();
+                            ChatRoom chatRoom = new ChatRoom();
+                            Map<String, Object> objectMap = (HashMap<String, Object>) dataSnapshot.getValue();
+                            chatRoom.setChatroom_id(objectMap.get(getString(R.string.field_chatroom_id)).toString());
+                            chatRoom.setChatroom_name(objectMap.get(getString(R.string.field_chatroom_name)).toString());
+                            chatRoom.setCreator_id(objectMap.get(getString(R.string.field_creator_id)).toString());
+                            chatRoom.setSecurity_level(objectMap.get(getString(R.string.field_security_level)).toString());
+
+                            Log.d(TAG, "onDataChange: chatroom - " + chatRoom );
+                            //find the number of messages seen by the user
+                            int numMessageSeen = Integer.parseInt(dataSnapshot
+                                    .child(getString(R.string.field_users))
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(getString(R.string.field_last_message_seen))
+                                    .getValue().toString());
+                            int numMessages = (int) snapshot.child(getString(R.string.field_chatroom_messages)).getChildrenCount();
+                            mNumPendingMessages = (numMessages - numMessageSeen);
+                            Log.d(TAG, "onDataChange: num of pending messages = " + mNumPendingMessages);
+
+                            sendChatMessageNotification(title, message, chatRoom);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+                });
+            }
         }
     }
 
@@ -180,6 +206,61 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         mNotificationManager.notify(BROADCAST_NOTIFICATION_ID, builder.build());
 
+    }
+
+    private void sendChatMessageNotification(String title, String message, ChatRoom chatRoom) {
+        //get notification id
+        int notificationId = buildNotificationId(chatRoom.getChatroom_id());
+        // Instantiate a Builder object.
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
+                getString(R.string.default_notification_channel_name));
+        // Creates an Intent for the Activity
+        Intent pendingIntent = new Intent(this, LoginActivity.class);
+        // Sets the Activity to start in a new, empty task
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        pendingIntent.putExtra(getString(R.string.intent_chatroom), Parcels.wrap(chatRoom));
+        // Creates the PendingIntent
+        PendingIntent notifyPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        pendingIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        //add properties to the builder
+        builder.setSmallIcon(R.drawable.bonga_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.drawable.bonga_logo))
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentTitle(title)
+                .setContentText("New messages in " + chatRoom.getChatroom_name())
+                .setColor(getResources().getColor(R.color.gray))
+                .setAutoCancel(true)
+                .setSubText(message)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("New messages in " + chatRoom.getChatroom_name()).setSummaryText(message))
+                .setNumber(mNumPendingMessages)
+                .setOnlyAlertOnce(true);
+
+        builder.setContentIntent(notifyPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(notificationId, builder.build());
+
+    }
+
+    private int buildNotificationId(String id){
+        Log.d(TAG, "buildNotificationId: building a notification id.");
+
+        int notificationId = 0;
+        for(int i = 0; i < 9; i++){
+            notificationId = notificationId + id.charAt(0);
+        }
+        Log.d(TAG, "buildNotificationId: id: " + id);
+        Log.d(TAG, "buildNotificationId: notification id:" + notificationId);
+        return notificationId;
     }
 
 
