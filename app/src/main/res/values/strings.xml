@@ -11,6 +11,7 @@
     <string name="dbnode_server">server</string>
     <string name="field_server_key">server_key</string>
 
+    <string name="dbnode_chatrooms">chatrooms</string>
 
 <!--    FCM related values-->
     <string name="data_type_chat_message">data_type_chat_message</string>

@@ -17,8 +17,12 @@ import androidx.core.app.NotificationCompat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -70,8 +74,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendBroadcastNotification(title, message);
             }
             else if(identifyDataType.equals(getString(R.string.data_type_chat_message))) {
-
             }
+                final String title = remoteMessage.getData().get(getString(R.string.data_title));
+                final String message = remoteMessage.getData().get(getString(R.string.data_message));
+                final String chatRoomId = remoteMessage.getData().get(getString(R.string.data_chatroom_id));
+
+            Log.d(TAG, "onMessageReceived: chatroom id = " + chatRoomId);
+            Query query = FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbnode_chatrooms))
+                    .orderByKey()
+                    .equalTo(chatRoomId);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildren().iterator().hasNext()) {
+                        DataSnapshot dataSnapshot = snapshot.getChildren().iterator().next();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 
