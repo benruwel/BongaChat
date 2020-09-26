@@ -215,7 +215,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
                 getString(R.string.default_notification_channel_name));
         // Creates an Intent for the Activity
-        Intent pendingIntent = new Intent(this, LoginActivity.class);
+        Intent pendingIntent = new Intent(this, MainActivity.class);
         // Sets the Activity to start in a new, empty task
         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pendingIntent.putExtra(getString(R.string.intent_chatroom), Parcels.wrap(chatRoom));
