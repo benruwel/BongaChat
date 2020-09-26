@@ -85,7 +85,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
     //Now that is the admin activity, we can query db for some-what risky data
     private void getServerKey() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbnode_server)).orderByValue();
+        Query query = reference.child(getString(R.string.dbnode_server)).child(getString(R.string.field_server_key)).orderByValue();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -105,10 +105,11 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("Authorization", "key="+mServerKey);
+        Log.d(TAG, "sendMessageToGroup: here is the server key - " + mServerKey);
 
         //send messages to all tokes
         for(String token : mTokens){
-            Log.d(TAG, "sendMessageToGroup: sending to token" + token);
+            Log.d(TAG, "sendMessageToGroup: sending to token " + token);
             FCMData data = new FCMData();
             data.setMessage(message);
             data.setTitle(title);
@@ -124,7 +125,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     Log.d(TAG, "onResponse: Server response : " + response.toString());
-                    Snackbar.make(mBroadcastButton, "Broadcast sent", Snackbar.LENGTH_LONG)
+                    Snackbar.make(mBroadcastButton, "Broadcast sent", Snackbar.LENGTH_SHORT)
                             .setBackgroundTint(getResources().getColor(R.color.gray_dark))
                             .setActionTextColor(getResources().getColor(R.color.gray))
                             .show();
