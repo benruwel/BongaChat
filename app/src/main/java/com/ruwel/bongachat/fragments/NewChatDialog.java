@@ -1,9 +1,14 @@
 package com.ruwel.bongachat.fragments;
 
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -59,8 +64,9 @@ public class NewChatDialog extends DialogFragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.dialog_new_chat, container, false);
         ButterKnife.bind(this, view);
         getUserSecurityLevel();
+        getDialog().setTitle("New Chat");
         mSeekProgress = 0;
-        mSecurityLevel.setText(String.valueOf(mSeekProgress));
+        mSecurityLevel.setText(String.valueOf(mSeekBar.getProgress()));
         mNewChat.setOnClickListener(this);
         return view;
     }
@@ -103,6 +109,20 @@ public class NewChatDialog extends DialogFragment implements View.OnClickListene
         }
     }
 
+    public void onResume() {
+        // Store access variables for window and blank point
+        Window window = getDialog().getWindow();
+        Point size = new Point();
+        // Store dimensions of the screen in `size`
+        Display display = window.getWindowManager().getDefaultDisplay();
+        display.getSize(size);
+        // Set the width of the dialog proportional to 75% of the screen width
+        window.setLayout((int) (size.x * 0.75), WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
+        // Call super onResume after sizing
+        super.onResume();
+    }
+
     private void getUserSecurityLevel() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbnode_users))
@@ -122,7 +142,7 @@ public class NewChatDialog extends DialogFragment implements View.OnClickListene
     }
     private boolean isValidName(String name) {
         if (name.equals("")) {
-            mNewChatName.setError("Please enter your name");
+            mNewChatName.setError("Please enter the topic");
             return false;
         }
         return true;
