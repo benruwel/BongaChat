@@ -19,6 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.models.ChatRoom;
+
+import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
         //check the user's admin privilege as soon as the activity starts
         isAdmin();
+        //handle intents of chat room notifications
+        getPendingIntent();
     }
 
     @Override
@@ -106,5 +111,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void getPendingIntent() {
+        Intent intent = getIntent();
+        if(intent.hasExtra(getString(R.string.intent_chatroom))) {
+            ChatRoom chatRoom = Parcels.unwrap(intent.getParcelableExtra(getString(R.string.intent_chatroom)));
+            Intent chatroomIntent = new Intent(MainActivity.this, ChatRoomActivity.class);
+            chatroomIntent.putExtra(getString(R.string.intent_chatroom), Parcels.wrap(chatRoom));
+            startActivity(chatroomIntent);
+        }
     }
 }
