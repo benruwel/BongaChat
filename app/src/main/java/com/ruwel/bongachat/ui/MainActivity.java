@@ -2,14 +2,17 @@ package com.ruwel.bongachat.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -19,38 +22,57 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.fragments.NewChatDialog;
 import com.ruwel.bongachat.models.ChatRoom;
 
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.noChat)
-    TextView textView;
+    TextView mNoChat;
+    @BindView(R.id.chat_messages_recycler_view)
+    RecyclerView mChatsRV;
+    @BindView(R.id.new_chat_fab)
+    FloatingActionButton mNewChatFAB;
 
     private int mSecurity_level;
     private boolean adminTruthy;
     private static final String TAG = "MainActivity";
     public static boolean isActivityRunning;
+    private ArrayList<ChatRoom> mChatRooms;
+    private DatabaseReference mChatRoomReference;
+    private HashMap<String, String> mNumChatRoomMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        //check the user's admin privilege as soon as the activity starts
-        isAdmin();
         //handle intents of chat room notifications
         getPendingIntent();
+
+        mNewChatFAB.setOnClickListener(this);
+
+        init();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view == mNewChatFAB) {
+            NewChatDialog dialog = new NewChatDialog();
+            dialog.show(getSupportFragmentManager(), "dialog_new_chatroom");
+        }
     }
 
     @Override
@@ -63,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.log_out) {
-            Snackbar.make(textView, "Logging out", Snackbar.LENGTH_SHORT)
+            Snackbar.make(mNoChat, "Logging out", Snackbar.LENGTH_SHORT)
                     .setBackgroundTint(getResources().getColor(R.color.gray_dark))
                     .setActionTextColor(getResources().getColor(R.color.gray))
                     .show();
@@ -79,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                 startActivity(intent);
             } else {
-                Snackbar.make(textView, "You don't have admin privilege", Snackbar.LENGTH_SHORT)
+                Snackbar.make(mNoChat, "You don't have admin privilege", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(getResources().getColor(R.color.gray_dark))
                         .setActionTextColor(getResources().getColor(R.color.gray))
                         .show();
@@ -129,11 +151,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init() {
-
+        mChatRooms = new ArrayList<>();
+        //check the user's admin privilege as soon as the activity starts
+        isAdmin();
     }
     private String getTimestamp(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("Africa/Nairobi"));
         return sdf.format(new Date());
+    }
+    private void showChatList() {
+        mChatsRV.setVisibility(View.VISIBLE);
+    }
+    private void hideNoChatsText() {
+        mNoChat.setVisibility(View.GONE);
     }
 }

@@ -15,7 +15,14 @@
             android:id="@+id/noChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You have no chats of the moment" />
+            android:text="You have no chats of the moment"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_messages_recycler_view"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"/>
 
 
     </LinearLayout>
@@ -29,7 +36,7 @@
         android:backgroundTint="@color/colorAccent"
         android:layout_margin="20dp"
         app:rippleColor="@color/colorAccent_ripple"
-        android:id="@+id/new_chat"
+        android:id="@+id/new_chat_fab"
         app:borderWidth="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
