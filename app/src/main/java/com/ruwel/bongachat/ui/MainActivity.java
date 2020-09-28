@@ -23,6 +23,11 @@ import com.ruwel.bongachat.models.ChatRoom;
 
 import org.parceler.Parcels;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -121,5 +126,14 @@ public class MainActivity extends AppCompatActivity {
             chatroomIntent.putExtra(getString(R.string.intent_chatroom), Parcels.wrap(chatRoom));
             startActivity(chatroomIntent);
         }
+    }
+
+    public void init() {
+
+    }
+    private String getTimestamp(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("Africa/Nairobi"));
+        return sdf.format(new Date());
     }
 }
