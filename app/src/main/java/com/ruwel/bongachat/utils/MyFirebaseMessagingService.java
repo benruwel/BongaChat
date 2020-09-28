@@ -237,7 +237,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText("New messages in " + chatRoom.getChatroom_name())
                 .setColor(getResources().getColor(R.color.gray))
                 .setAutoCancel(true)
-                .setSubText(message)
+                .setSubText(message) //on squished state
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("New messages in " + chatRoom.getChatroom_name()).setSummaryText(message))
                 .setNumber(mNumPendingMessages)

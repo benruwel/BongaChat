@@ -1,12 +1,15 @@
 package com.ruwel.bongachat.models;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class ChatMessage {
 
-    private String message;
-    private String user_id;
-    private String timestamp;
-    private String profile_image;
-    private String name;
+    public String message;
+    public String user_id;
+    public String timestamp;
+    public String profile_image;
+    public String name;
 
     public ChatMessage() {
     }

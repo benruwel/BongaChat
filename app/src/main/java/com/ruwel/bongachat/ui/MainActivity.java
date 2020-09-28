@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.helloWorld)
+    @BindView(R.id.noChat)
     TextView textView;
 
     private int mSecurity_level;
