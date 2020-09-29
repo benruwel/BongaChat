@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import com.ruwel.bongachat.models.ChatRoom;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapter.ChatRoomViewHolder> {
@@ -42,6 +44,14 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
     public class ChatRoomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Context context;
+        @BindView(R.id.time)
+        TextView mTime;
+        @BindView(R.id.topic)
+        TextView mTopic;
+        @BindView(R.id.message_summary)
+        TextView mMessageSummary;
+        @BindView(R.id.unread_messages)
+        TextView mUnreadMessages;
 
         public ChatRoomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,7 +64,7 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
         }
         public void bindChatRooms(ChatRoom chatRoom) {
-
+            mTopic.setText(chatRoom.chatroom_name);
         }
     }
 }
