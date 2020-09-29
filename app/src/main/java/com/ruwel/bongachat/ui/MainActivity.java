@@ -23,6 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
 import com.ruwel.bongachat.fragments.NewChatDialog;
+import com.ruwel.bongachat.models.ChatMessage;
 import com.ruwel.bongachat.models.ChatRoom;
 
 import org.parceler.Parcels;
@@ -31,7 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -121,6 +124,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStop();
         isActivityRunning = false;
     }
+
+    public void getChatrooms(){
+        Log.d(TAG, "getChatrooms: retrieving chatrooms from firebase database.");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        mNumChatRoomMessages = new HashMap<>();
+        if(mAdapter != null){
+            mAdapter.clear();
+            mChatRooms.clear();
+        }
+        Query query = reference.child(getString(R.string.dbnode_chatrooms)).orderByKey();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot:  dataSnapshot.getChildren()){
+//                    Log.d(TAG, "onDataChange: found chatroom: "
+//                            + singleSnapshot.getValue());
+                    try{
+                        if(singleSnapshot.exists()){
+                            ChatRoom chatroom = new ChatRoom();
+                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                            Log.d(TAG, "onDataChange: found a chatroom: "
+                                    + objectMap.get(getString(R.string.field_chatroom_name)).toString());
+                            chatroom.setChatroom_id(objectMap.get(getString(R.string.field_chatroom_id)).toString());
+                            chatroom.setChatroom_name(objectMap.get(getString(R.string.field_chatroom_name)).toString());
+                            chatroom.setCreator_id(objectMap.get(getString(R.string.field_creator_id)).toString());
+                            chatroom.setSecurity_level(objectMap.get(getString(R.string.field_security_level)).toString());
+
+
+                            //                    chatroom.setChatroom_id(singleSnapshot.getValue(Chatroom.class).getChatroom_id());
+                            //                    chatroom.setSecurity_level(singleSnapshot.getValue(Chatroom.class).getSecurity_level());
+                            //                    chatroom.setCreator_id(singleSnapshot.getValue(Chatroom.class).getCreator_id());
+                            //                    chatroom.setChatroom_name(singleSnapshot.getValue(Chatroom.class).getChatroom_name());
+
+                            //get the chatrooms messages
+                            ArrayList<ChatMessage> messagesList = new ArrayList<ChatMessage>();
+                            int numMessages = 0;
+                            for(DataSnapshot snapshot: singleSnapshot
+                                    .child(getString(R.string.field_chatroom_messages)).getChildren()){
+                                ChatMessage message = new ChatMessage();
+                                message.setTimestamp(snapshot.getValue(ChatMessage.class).getTimestamp());
+                                message.setUser_id(snapshot.getValue(ChatMessage.class).getUser_id());
+                                message.setMessage(snapshot.getValue(ChatMessage.class).getMessage());
+                                messagesList.add(message);
+                                numMessages++;
+                            }
+                            if(messagesList.size() > 0){
+                                chatroom.setChatroom_messages(messagesList);
+
+                                //add the number of chatrooms messages to a hashmap for reference
+                                mNumChatRoomMessages.put(chatroom.getChatroom_id(), String.valueOf(numMessages));
+                            }
+
+                            //get the list of users who have joined the chatroom
+                            List<String> users = new ArrayList<String>();
+                            for(DataSnapshot snapshot: singleSnapshot
+                                    .child(getString(R.string.field_users)).getChildren()){
+                                String user_id = snapshot.getKey();
+                                Log.d(TAG, "onDataChange: user currently in chatroom: " + user_id);
+                                users.add(user_id);
+                            }
+                            if(users.size() > 0){
+                                chatroom.setUsers(users);
+                            }
+
+                            mChatRooms.add(chatroom);
+                        }
+
+                        setupChatroomList();
+                    }catch (NullPointerException e){
+                        Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage() );
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void isAdmin() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

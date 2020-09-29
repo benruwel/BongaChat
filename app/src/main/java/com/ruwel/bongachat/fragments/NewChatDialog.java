@@ -66,7 +66,7 @@ public class NewChatDialog extends DialogFragment implements View.OnClickListene
         getUserSecurityLevel();
         getDialog().setTitle("New Chat");
         mSeekProgress = 0;
-        mSecurityLevel.setText(String.valueOf(mSeekBar.getProgress()));
+//        mSecurityLevel.setText();
         mNewChat.setOnClickListener(this);
         return view;
     }
