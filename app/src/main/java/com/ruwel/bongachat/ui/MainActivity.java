@@ -2,6 +2,7 @@ package com.ruwel.bongachat.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ruwel.bongachat.R;
+import com.ruwel.bongachat.adapters.ChatRoomListAdapter;
 import com.ruwel.bongachat.fragments.NewChatDialog;
 import com.ruwel.bongachat.models.ChatMessage;
 import com.ruwel.bongachat.models.ChatRoom;
@@ -48,7 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RecyclerView mChatsRV;
     @BindView(R.id.new_chat_fab)
     FloatingActionButton mNewChatFAB;
+    @BindView(R.id.main_prgb)
+    ProgressBar mProgressBar;
 
+    private ChatRoomListAdapter mAdapter;
     private int mSecurity_level;
     private boolean adminTruthy;
     private static final String TAG = "MainActivity";
@@ -66,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getPendingIntent();
 
         mNewChatFAB.setOnClickListener(this);
-
         init();
+        getChatrooms();
     }
 
     @Override
@@ -129,10 +135,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "getChatrooms: retrieving chatrooms from firebase database.");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         mNumChatRoomMessages = new HashMap<>();
-        if(mAdapter != null){
-            mAdapter.clear();
-            mChatRooms.clear();
-        }
         Query query = reference.child(getString(R.string.dbnode_chatrooms)).orderByKey();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -142,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                            + singleSnapshot.getValue());
                     try{
                         if(singleSnapshot.exists()){
+                            hideNoChatsText();
+                            showProgressBar();
                             ChatRoom chatroom = new ChatRoom();
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
@@ -152,14 +156,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             chatroom.setCreator_id(objectMap.get(getString(R.string.field_creator_id)).toString());
                             chatroom.setSecurity_level(objectMap.get(getString(R.string.field_security_level)).toString());
 
-
-                            //                    chatroom.setChatroom_id(singleSnapshot.getValue(Chatroom.class).getChatroom_id());
-                            //                    chatroom.setSecurity_level(singleSnapshot.getValue(Chatroom.class).getSecurity_level());
-                            //                    chatroom.setCreator_id(singleSnapshot.getValue(Chatroom.class).getCreator_id());
-                            //                    chatroom.setChatroom_name(singleSnapshot.getValue(Chatroom.class).getChatroom_name());
-
                             //get the chatrooms messages
-                            ArrayList<ChatMessage> messagesList = new ArrayList<ChatMessage>();
+                            ArrayList<ChatMessage> messagesList = new ArrayList<>();
                             int numMessages = 0;
                             for(DataSnapshot snapshot: singleSnapshot
                                     .child(getString(R.string.field_chatroom_messages)).getChildren()){
@@ -172,13 +170,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                             if(messagesList.size() > 0){
                                 chatroom.setChatroom_messages(messagesList);
-
                                 //add the number of chatrooms messages to a hashmap for reference
                                 mNumChatRoomMessages.put(chatroom.getChatroom_id(), String.valueOf(numMessages));
                             }
 
                             //get the list of users who have joined the chatroom
-                            List<String> users = new ArrayList<String>();
+                            List<String> users = new ArrayList<>();
                             for(DataSnapshot snapshot: singleSnapshot
                                     .child(getString(R.string.field_users)).getChildren()){
                                 String user_id = snapshot.getKey();
@@ -193,6 +190,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
 
                         setupChatroomList();
+                        hideProgressBar();
+                        showChatList();
                     }catch (NullPointerException e){
                         Log.e(TAG, "onDataChange: NullPointerException: " + e.getMessage() );
                     }
@@ -207,6 +206,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void setupChatroomList() {
+        mAdapter = new ChatRoomListAdapter(mChatRooms, MainActivity.this);
+        mChatsRV.setAdapter(mAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+        mChatsRV.setLayoutManager(layoutManager);
+    }
 
     private void isAdmin() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -248,6 +253,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void showChatList() {
         mChatsRV.setVisibility(View.VISIBLE);
+    }
+    private void showProgressBar() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
     private void hideNoChatsText() {
         mNoChat.setVisibility(View.GONE);

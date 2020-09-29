@@ -65,6 +65,7 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         }
         public void bindChatRooms(ChatRoom chatRoom) {
             mTopic.setText(chatRoom.chatroom_name);
+            mUnreadMessages.setText(chatRoom.chatroom_messages.size());
         }
     }
 }
