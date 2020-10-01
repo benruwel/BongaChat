@@ -4,33 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bonga_bg"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.LoginActivity">
+    tools:context=".ui.AdminActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:orientation="vertical"
         android:background="@drawable/input_box"
-        android:layout_marginEnd="20dp"
         android:padding="10dp"
-        android:orientation="vertical">
-
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:text="Welcome back"
+            android:textColor="@color/gray"
             android:paddingBottom="10dp"
-            android:textColor="@color/gray"/>
+            android:text="Send broadcast messages"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_email"
+            android:id="@+id/broadcast_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email_text"
+            android:hint="Title"
             android:paddingBottom="10dp"
             android:textColorHint="@color/gray_dark"
             android:alpha="0.7"
@@ -45,68 +43,47 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"/>
+                android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_password"
+            android:id="@+id/broadcast_message"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Message"
             android:paddingBottom="10dp"
-            app:boxStrokeWidth="2dp"
-            app:boxStrokeWidthFocused="4dp"
-            app:endIconMode="password_toggle"
-            app:endIconTint="@color/gray_dark"
+            android:textColorHint="@color/gray_dark"
             android:alpha="0.7"
             app:boxBackgroundColor="@color/gray_translucent"
-            app:hintTextColor="@color/gray_dark"
+            app:boxBackgroundMode="filled"
             app:boxStrokeColor="@color/gray_dark"
-            android:textColorHint="@color/gray_dark"
-            android:layout_height="wrap_content"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:endIconMode="clear_text"
             app:errorEnabled="true"
-            android:hint="@string/password_text">
+            app:hintTextColor="@color/gray_dark">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="textMultiLine"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
+
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/broadcast_button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="20dp"
         app:rippleColor="@color/colorAccent_ripple"
         app:backgroundTint="@color/colorAccent"
-        android:text="Log in"/>
+        android:text="Send"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/noAccount1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textColor="@color/gray"
-            android:text="Don't have an account? "/>
-        <TextView
-            android:id="@+id/noAccount2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textColor="@color/colorAccent"
-            android:text="@string/signup_text"/>
-    </LinearLayout>
+
 
 
 </LinearLayout>

@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.ruwel.bongachat"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -28,6 +28,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
